@@ -123,7 +123,7 @@ jobs:
             pip install -r requirements-api.txt
           
             # Crear/actualizar archivo .env
-            cat > /home/ubuntu/parcial/Zappa_Dolar/.env <<EOF
+            cat > /home/ubuntu/Zappa_Dolar/.env <<EOF
             BUCKET_NAME=${{ secrets.BUCKET_NAME }}
             DB_HOST=${{ secrets.DB_HOST }}
             DB_USER=${{ secrets.DB_USER }}
