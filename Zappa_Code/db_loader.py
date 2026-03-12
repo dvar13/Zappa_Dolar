@@ -4,12 +4,14 @@ import boto3
 from datetime import datetime
 import pymysql
 
-def g(event, context):
+def upload(event, context):
     """
     Lambda que carga datos de un archivo JSON en S3 a MySQL.
     Permite inyectar conexión para tests a través de context.db_conn.
     """
+    
     db_conn = getattr(context, "db_conn", None)  # solo para tests
+    
     try:
         print(">>> Iniciando Lambda db_loader...")
 

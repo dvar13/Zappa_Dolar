@@ -5,13 +5,15 @@ import boto3
 import os
 
 s3 = boto3.client("s3")
-BUCKET_NAME = os.environ.get("BUCKET_NAME", "dolar-raw-eltimpeosj")
+
 
 def obtener_y_guardar_dolar():
     """
     Obtiene los datos del mercado cambiario de la URL y los guarda en un JSON en S3.
     """
     url = "https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario"
+    
+    BUCKET_NAME = os.environ.get("BUCKET_NAME")
     
     try:
         response = requests.get(url)

@@ -7,7 +7,7 @@ import os
 from dotenv import load_dotenv
 
 # Cargar variables desde .env
-load_dotenv(dotenv_path="/home/ubuntu/app/.env")
+load_dotenv()
 
 app = FastAPI(title="API de valores del dólar")
 

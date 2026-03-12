@@ -1,45 +1,44 @@
 {
     "dev": {
-        "app_function": "app.f",
+        "app_function": "app.api_get",
         "aws_region": "us-east-1",
         "exclude": [
             "boto3",
             "dateutil",
             "botocore",
             "s3transfer",
-            "concurrent",
-            "requirements-api.txt", 
-            "requirements-test.txt"
+            "concurrent"
         ],
-        "project_name": "zappa-dolar",
+        "project_name": "zappa-code",
         "runtime": "python3.10",
-        "s3_bucket": "dolar-raw-eltimpeosj",
+        "s3_bucket": "${BUCKET_NAME}",
         "keep_warm": false,
         "apigateway_enabled": false,
         "manage_roles": false,
         "role_name": "Labrole",
+        "environment_variables": {
+            "BUCKET_NAME": "${BUCKET_NAME}"
+        },
         "events": [
             {
-                "function": "app.f",
-                "expression": "cron(0 23 ? * * *)"
+                "function": "app.api_get",
+                "expression": "cron(0 2 ? * * *)"
             }
         ]
     },
     "db": {
-        "app_function": "db_loader.g",
+        "app_function": "db_loader.upload",
         "aws_region": "us-east-1",
         "exclude": [
             "boto3",
             "dateutil",
             "botocore",
             "s3transfer",
-            "concurrent",
-            "requirements-api.txt", 
-            "requirements-test.txt"
+            "concurrent"
         ],
         "project_name": "zappa-db-loader",
         "runtime": "python3.10",
-        "s3_bucket": "dolar-raw-eltimpeosj",
+        "s3_bucket": "${BUCKET_NAME}",
         "keep_warm": false,
         "apigateway_enabled": false,
         "manage_roles": false,
@@ -52,9 +51,9 @@
         },
         "events": [
             {
-                "function": "db_loader.g",
+                "function": "db_loader.upload",
                 "event_source": {
-                    "arn": "arn:aws:s3:::dolar-raw-eltimpeosj",
+                    "arn": "arn:aws:s3:::dolar-raw-eltimes",
                     "events": ["s3:ObjectCreated:*"],
                     "filters": [
                         {

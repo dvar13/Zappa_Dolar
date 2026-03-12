@@ -31,6 +31,7 @@ jobs:
         run: |
           python3 -m venv env-test
           source env-test/bin/activate
+          cd Test
           pip install -r requirements-test.txt
           pytest
 
@@ -48,6 +49,7 @@ jobs:
 
       - name: Install lambda dependencies
         run: |
+          cd Zappa_Code
           python3 -m venv env-lambda
           source env-lambda/bin/activate
           pip install -r requirements.txt
@@ -61,8 +63,14 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
 
+      - name: Replace env vars in zappa_settings.json
+        run: |
+          cd Zappa_Code
+          sed -i "s|\${BUCKET_NAME}|${{ secrets.BUCKET_NAME }}|g" zappa_settings.json
+
       - name: Deploy with Zappa (dollar downloader)
         run: |
+          cd Zappa_Code
           source env-lambda/bin/activate
           if zappa status dev; then
             zappa update dev
@@ -72,6 +80,8 @@ jobs:
 
       - name: Replace env vars in zappa_settings.json
         run: |
+          cd Zappa_Code
+          sed -i "s|\${BUCKET_NAME}|${{ secrets.BUCKET_NAME }}|g" zappa_settings.json
           sed -i "s|\${DB_HOST}|${{ secrets.DB_HOST }}|g" zappa_settings.json
           sed -i "s|\${DB_USER}|${{ secrets.DB_USER }}|g" zappa_settings.json
           sed -i "s|\${DB_PASS}|${{ secrets.DB_PASS }}|g" zappa_settings.json
@@ -80,6 +90,7 @@ jobs:
   
       - name: Deploy Zappa (DB loader)
         run: |
+          cd Zappa_Code
           source env-lambda/bin/activate
           if zappa status db; then
             zappa update db
@@ -103,7 +114,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/parcial/Zappa_Dolar
+            cd /home/ubuntu/Zappa_Dolar
             git pull origin main
           
             if [ ! -d "venv" ]; then python3 -m venv venv; fi
@@ -113,6 +124,7 @@ jobs:
           
             # Crear/actualizar archivo .env
             cat > /home/ubuntu/parcial/Zappa_Dolar/.env <<EOF
+            BUCKET_NAME=${{ secrets.BUCKET_NAME }}
             DB_HOST=${{ secrets.DB_HOST }}
             DB_USER=${{ secrets.DB_USER }}
             DB_PASS=${{ secrets.DB_PASS }}
